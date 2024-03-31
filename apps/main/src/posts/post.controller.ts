@@ -3,7 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { PostCreateDto } from './types/create/request.dto';
 import { UpdatePostDto } from './types/update/request.dto';
 
-@Controller('post')
+@Controller('posts')
 export class PostController {
   constructor(@Inject('POST_SERVICE') private client: ClientProxy) {}
   @Post()
