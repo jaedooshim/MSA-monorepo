@@ -19,8 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/msa-monorepo/test/jest-e2e.json",
     "start:main": "nest start main --debug --watch",
-    "start:post": "nest start post --debug --watch"
-
+    "start:post": "nest start post --debug --watch",
+    "start:member": "nest start member --debug --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
