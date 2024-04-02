@@ -1,4 +1,4 @@
-export class IMemberCreate {
+export interface IMemberCreate {
   name: string;
   email: string;
   password: string;
