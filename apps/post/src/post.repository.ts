@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../../msa-monorepo/src/prisma/prisma.service';
+import { PrismaService } from '../../../libs/prisma/prisma.service';
 
 @Injectable()
 export class PostRepository {
