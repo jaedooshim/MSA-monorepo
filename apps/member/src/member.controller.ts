@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put, Query } from '@nestjs/common';
+import { Body, Controller, Param, Query } from '@nestjs/common';
 import { MemberService } from './member.service';
 import { CreateMemberDto } from './types/create/request.dto';
 import { MemberParamDto, UpdateMemberDto, UpdatePasswordDto } from './types/update/request.dto';
