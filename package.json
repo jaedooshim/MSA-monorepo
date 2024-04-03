@@ -83,7 +83,8 @@
     ],
     "moduleNameMapper": {
       "^@app/core(|/.*)$": "<rootDir>/libs/core/src/$1",
-      "^@app/bcrypt(|/.*)$": "<rootDir>/libs/bcrypt/src/$1"
+      "^@app/bcrypt(|/.*)$": "<rootDir>/libs/bcrypt/src/$1",
+      "^@app/guard(|/.*)$": "<rootDir>/libs/guard/src/$1"
     }
   }
 }

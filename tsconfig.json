@@ -29,6 +29,12 @@
       ],
       "@app/bcrypt/*": [
         "libs/bcrypt/src/*"
+      ],
+      "@app/guard": [
+        "libs/guard/src"
+      ],
+      "@app/guard/*": [
+        "libs/guard/src/*"
       ]
     }
   }

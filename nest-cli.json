@@ -72,6 +72,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/bcrypt/tsconfig.lib.json"
       }
+    },
+    "guard": {
+      "type": "library",
+      "root": "libs/guard",
+      "entryFile": "index",
+      "sourceRoot": "libs/guard/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/guard/tsconfig.lib.json"
+      }
     }
   }
 }
