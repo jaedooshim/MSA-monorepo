@@ -23,6 +23,12 @@
       ],
       "@app/core/*": [
         "libs/core/src/*"
+      ],
+      "@app/bcrypt": [
+        "libs/bcrypt/src"
+      ],
+      "@app/bcrypt/*": [
+        "libs/bcrypt/src/*"
       ]
     }
   }
