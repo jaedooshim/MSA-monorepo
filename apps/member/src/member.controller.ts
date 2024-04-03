@@ -14,16 +14,19 @@ export class MemberController {
   }
 
   @Put('/:id')
+  // Guard 추가 예정
   async update(@Body() body: UpdateMemberDto, @Param() param: MemberParamDto): Promise<string> {
     return await this.memberService.update(param.id, body);
   }
 
   @Patch('/:id')
+  // Guard 추가 예정
   async updatePassword(@Body() body: UpdatePasswordDto, @Param() param: MemberParamDto): Promise<string> {
     return await this.memberService.updatePassword(param.id, body.oldPassword, body.newPassword);
   }
 
   @Delete('/:id')
+  // Guard 추가 예정
   async delete(@Param() param: MemberParamDto): Promise<string> {
     return await this.memberService.softDelete(param.id);
   }
