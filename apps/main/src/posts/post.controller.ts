@@ -12,11 +12,13 @@ export class PostController {
   }
 
   @Put(':id')
+  // Guard 추가
   async updateOwn(@Body() body: UpdatePostDto, @Param('id') id: number) {
     return this.client.send<string>('update_own_post', { id, body, userId: 1 });
   }
 
   @Delete(':id')
+  // Guard 추가
   async deleteOwn(@Param('id') id: number) {
     return this.client.send<string>('delete_own_post', { id, userId: 1 });
   }
