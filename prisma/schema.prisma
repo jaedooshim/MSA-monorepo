@@ -10,6 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// schema 수정 예정
 model Member {
   id        String    @id @default(uuid())
   name      String    @db.VarChar()
