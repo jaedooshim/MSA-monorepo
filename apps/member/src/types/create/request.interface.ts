@@ -2,5 +2,7 @@ export interface IMemberCreate {
   name: string;
   email: string;
   password: string;
-  country: string;
+  phoneNumber: string;
+  address: string;
+  subAddress: string;
 }
