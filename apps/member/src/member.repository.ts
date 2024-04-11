@@ -49,4 +49,9 @@ export class MemberRepository {
     const existEmail = await this.memberRepository.findFirst({ where: { email } });
     if (existEmail) throw new ConflictException('이미 등록된 이메일입니다. \n 다시 한번 확인해주세요.');
   }
+
+  async isValidPhoneNumber(phoneNumber: string) {
+    const existPhoneNumber = await this.memberRepository.findFirst({ where: { phoneNumber } });
+    if (existPhoneNumber) throw new ConflictException('이미 등록된 전화번호입니다. \n 다시 한번 확인해주세요.');
+  }
 }
