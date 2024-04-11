@@ -1,7 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { MemberRepository } from './member.repository';
 import { IMemberCreate } from './types/create/request.interface';
-import { Member } from '@prisma/client';
 import { BcryptService } from '@app/bcrypt';
 import { IMemberUpdate } from './types/update/request.interface';
 import { IMemberFindMany } from './types/find-many/request.interface';
@@ -15,6 +14,7 @@ export class MemberService {
 
   async create(data: IMemberCreate): Promise<string> {
     await this.memberRepository.isValidEmail(data.email);
+    await this.memberRepository.isValidPhoneNumber(data.phoneNumber);
     data.password = await this.bcryptService.hash(data.password);
     await this.memberRepository.create(data);
     return '멤버가 정상적으로 생성되었습니다.';
@@ -22,8 +22,12 @@ export class MemberService {
 
   async update(id: string, data: IMemberUpdate): Promise<string> {
     const member = await this.memberRepository.findUniqueOrThrow(id);
-    await this.memberRepository.isValidEmail(data.email);
-    // await this.verifyAccessAuthorityOrThrow(member.id, data.id);
+    if (data.email && member.email !== data.email) {
+      await this.memberRepository.isValidEmail(data.email);
+    }
+    if (data.phoneNumber && member.phoneNumber !== data.phoneNumber) {
+      await this.memberRepository.isValidPhoneNumber(data.phoneNumber);
+    }
     await this.memberRepository.update(id, data);
     return '멤버정보가 정상적으로 수정되었습니다.';
   }
