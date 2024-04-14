@@ -41,7 +41,8 @@ export class MemberController {
     return await this.memberService.findUnique(param.id);
   }
 
-  @MessagePattern('find_many_member')
+  // @MessagePattern('find_many_member')
+  @Get()
   async findMany(@Query() query: MemberFindManyDto) {
     return await this.memberService.findMany(query);
   }
