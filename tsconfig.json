@@ -35,6 +35,12 @@
       ],
       "@app/guard/*": [
         "libs/guard/src/*"
+      ],
+      "@app/jwt": [
+        "libs/jwt/src"
+      ],
+      "@app/jwt/*": [
+        "libs/jwt/src/*"
       ]
     }
   }
