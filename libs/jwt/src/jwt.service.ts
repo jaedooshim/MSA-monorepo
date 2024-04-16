@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { sign, verify } from 'jsonwebtoken';
-import { Member } from '@prisma/client';
 import { IPayload } from '@app/jwt/types/payload.interface';
+
 @Injectable()
 export class JwtService {
   constructor(private configService: ConfigService) {}
 
-  sign(member: Member): string {
+  sign(member: IPayload): string {
     const { id, email, role } = member;
     return sign({ id, email, role }, this.configService.get<string>('ACCESS_TOKEN_SECRET_KEY')!, {
       expiresIn: this.configService.get<string>('ACCESS_TOKEN_EXPIRES_IN')!,
