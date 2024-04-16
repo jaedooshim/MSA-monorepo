@@ -57,6 +57,10 @@ export class MemberService {
     return await this.memberRepository.findMany(data);
   }
 
+  async findEmail(email: string) {
+    return await this.memberRepository.findEmail(email);
+  }
+
   async verifyAccessAuthorityOrThrow(id: string, memberId: string) {
     if (id !== memberId) throw new ForbiddenException('해당 아이디에 대한 권한이 없습니다.');
   }
