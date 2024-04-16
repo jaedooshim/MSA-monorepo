@@ -15,7 +15,6 @@ export class MemberController {
   }
 
   // @MessagePattern('update_own_member')
-  // Guard 추가 예정
   @Put(':id')
   @UseGuards(MemberAuthGuard)
   async updateOwn(@Body() body: UpdateMemberDto, @Param() param: MemberParamDto): Promise<string> {
@@ -30,7 +29,6 @@ export class MemberController {
   }
 
   // @MessagePattern('delete_own_member')
-  // Guard 추가 예정
   @Delete(':id')
   @UseGuards(MemberAuthGuard)
   async deleteOwn(@Param() param: MemberParamDto): Promise<string> {
