@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { IMemberCreate } from './types/create/request.interface';
 import { Member } from '@prisma/client';
@@ -53,5 +53,11 @@ export class MemberRepository {
   async isValidPhoneNumber(phoneNumber: string) {
     const existPhoneNumber = await this.memberRepository.findFirst({ where: { phoneNumber } });
     if (existPhoneNumber) throw new ConflictException('이미 등록된 전화번호입니다. \n 다시 한번 확인해주세요.');
+  }
+
+  async findEmail(email: string) {
+    const existEmail = await this.memberRepository.findFirst({ where: { email } });
+    if (!existEmail) throw new NotFoundException('등록되지 않은 이메일입니다. \n 다시 한번 확인해주세요.');
+    return existEmail;
   }
 }
