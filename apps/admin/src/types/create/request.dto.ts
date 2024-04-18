@@ -32,7 +32,7 @@ export class AdminCreateDto {
   @IsString()
   subAddress: string;
 
-  @IsEnum()
+  @IsEnum($Enums.adminRole)
   @IsNotEmpty()
   role: $Enums.adminRole;
 }
