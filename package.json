@@ -22,7 +22,8 @@
     "start:post": "nest start post --debug --watch",
     "start:member": "nest start member --debug --watch",
     "start:auth": "nest start auth --debug --watch",
-    "start:admin": "nest start admin --debug --watch"
+    "start:admin": "nest start admin --debug --watch",
+    "start:category": "nest start category --debug --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
