@@ -10,4 +10,9 @@ export class AuthController {
   async login(@Body() body: LoginDto) {
     return await this.authService.login(body);
   }
+
+  @Post('admin')
+  async adminLogin(@Body() body: LoginDto) {
+    return await this.authService.adminLogin(body);
+  }
 }
