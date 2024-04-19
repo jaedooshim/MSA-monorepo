@@ -6,7 +6,7 @@ import { CategoryParamDto, CategoryUpdateDto } from './types/update/request.dto'
 import { Category } from '@prisma/client';
 import { FindManyDto } from './types/find-many/request.dto';
 
-@Controller('category')
+@Controller('categorys')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
