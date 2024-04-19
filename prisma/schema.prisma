@@ -49,9 +49,9 @@ model Admin {
 }
 
 enum status {
-  Sales
-  SoldOut
-  Schedule
+  Sales // 판매중
+  SoldOut // 판매완료
+  Schedule // 예약중
 }
 
 model Product {
