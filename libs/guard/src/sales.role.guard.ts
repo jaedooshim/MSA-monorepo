@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { IRequest } from '@app/jwt/types/payload.interface';
 
 @Injectable()
-export class AdminAuthGuard implements CanActivate {
+export class SalesRoleGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
@@ -20,7 +20,7 @@ export class AdminAuthGuard implements CanActivate {
 
     const payload = this.jwtService.adminVerify(accessToken);
     if (typeof payload === 'string') throw new UnauthorizedException('해당하는 권한이 없습니다.');
-
+    if (payload.role !== 'Sales') throw new UnauthorizedException('판매자 권한이 필요합니다.');
     req.admin = payload;
     return true;
   }
