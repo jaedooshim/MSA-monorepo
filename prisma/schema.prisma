@@ -27,6 +27,8 @@ model Member {
   createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamp(3)
   updatedAt   DateTime?  @updatedAt @map("updated_at") @db.Timestamp(3)
   deletedAt   DateTime?  @map("deleted_at") @db.Timestamp(3)
+  comments    Comment[]
+  products    Product[]
 }
 
 enum adminRole {
@@ -46,6 +48,8 @@ model Admin {
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(3)
   updatedAt   DateTime? @updatedAt @map("updated_at") @db.Timestamp(3)
   deletedAt   DateTime? @map("deleted_at") @db.Timestamp(3)
+  comments    Comment[]
+  products    Product[]
 }
 
 enum status {
@@ -55,14 +59,21 @@ enum status {
 }
 
 model Product {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar()
-  content   String    @db.VarChar()
-  price     BigInt    @db.BigInt
-  status    status
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp(3)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(3)
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar()
+  content    String    @db.VarChar()
+  price      BigInt    @db.BigInt
+  status     status
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt  DateTime? @updatedAt @map("updated_at") @db.Timestamp(3)
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamp(3)
+  Member     Member?   @relation(fields: [memberId], references: [id])
+  memberId   String?
+  Admin      Admin?    @relation(fields: [adminId], references: [id])
+  adminId    String?
+  comments   Comment[]
+  category   Category  @relation(fields: [categoryId], references: [id])
+  categoryId Int
 }
 
 model Comment {
@@ -71,6 +82,12 @@ model Comment {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(3)
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp(3)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(3)
+  Member    Member?   @relation(fields: [memberId], references: [id])
+  memberId  String?
+  Admin     Admin?    @relation(fields: [adminId], references: [id])
+  adminId   String?
+  Product   Product?  @relation(fields: [productId], references: [id])
+  productId Int?
 }
 
 model Category {
@@ -79,4 +96,5 @@ model Category {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(3)
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp(3)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(3)
+  Product   Product[]
 }
