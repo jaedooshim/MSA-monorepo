@@ -3,7 +3,7 @@ import { AdminService } from './admin.service';
 import { AdminCreateDto } from './types/create/request.dto';
 import { AdminParamDto, UpdateAdminDto, UpdatePasswordDto } from './types/update/request.dto';
 import { adminFindManyDto } from './types/find-many/request.dto';
-import { AdminAuthGuard } from '@app/guard/admin.auth.guard';
+import { AdminRoleGuard } from '@app/guard/admin.role.guard';
 
 @Controller('admin')
 export class AdminController {
@@ -15,19 +15,19 @@ export class AdminController {
   }
 
   @Put(':id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(AdminRoleGuard)
   async update(@Body() body: UpdateAdminDto, @Param() param: AdminParamDto): Promise<string> {
     return await this.adminService.update(param.id, body);
   }
 
   @Patch(':id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(AdminRoleGuard)
   async updatePassword(@Param() param: AdminParamDto, @Body() body: UpdatePasswordDto) {
     return await this.adminService.updatePassword(param.id, body.oldPassword, body.newPassword);
   }
 
   @Delete(':id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(AdminRoleGuard)
   async delete(@Param() param: AdminParamDto): Promise<string> {
     return await this.adminService.softDelete(param.id);
   }
