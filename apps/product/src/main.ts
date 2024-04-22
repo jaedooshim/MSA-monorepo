@@ -15,6 +15,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters();
-  await app.listen(3000);
+  await app.listen(3006);
 }
 bootstrap();
