@@ -9,5 +9,6 @@ import { JwtModule } from '@app/jwt';
   imports: [PrismaModule, JwtModule],
   controllers: [CategoryController],
   providers: [CategoryService, CategoryRepository],
+  exports: [CategoryService],
 })
 export class CategoryModule {}
