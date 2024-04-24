@@ -144,6 +144,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/order/tsconfig.app.json"
       }
+    },
+    "comment": {
+      "type": "application",
+      "root": "apps/comment",
+      "entryFile": "main",
+      "sourceRoot": "apps/comment/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/comment/tsconfig.app.json"
+      }
     }
   }
 }
