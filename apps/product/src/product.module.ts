@@ -10,5 +10,6 @@ import { CategoryModule } from '../../category/src/category.module';
   imports: [PrismaModule, JwtModule, CategoryModule],
   controllers: [ProductController],
   providers: [ProductService, ProductRepository],
+  exports: [ProductService],
 })
 export class ProductModule {}
