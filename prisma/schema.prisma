@@ -107,6 +107,7 @@ enum OrderStatus {
 model Order {
   id          Int         @id @default(autoincrement())
   orderStatus OrderStatus
+  authKey     String?     @unique @map("auth_key")
   createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamp(3)
   updatedAt   DateTime?   @updatedAt @map("updated_at") @db.Timestamp(3)
   deletedAt   DateTime?   @map("deleted_at") @db.Timestamp(3)
