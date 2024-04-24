@@ -14,6 +14,7 @@ export interface IAdminPayload extends JwtPayload {
   role: $Enums.adminRole;
 }
 export interface IRequest extends Request {
-  member: IPayload;
-  admin: IAdminPayload;
+  member?: IPayload;
+  admin?: IAdminPayload;
+  isGuest: boolean;
 }
