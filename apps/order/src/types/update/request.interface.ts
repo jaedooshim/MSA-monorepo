@@ -4,5 +4,5 @@ export interface IOrderUpdate {
   orderStatus?: $Enums.OrderStatus;
   authKey?: string;
   memberId?: string;
-  productId: number;
+  productId?: number;
 }
