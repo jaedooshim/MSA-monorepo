@@ -24,3 +24,17 @@ export class OrderParamDto {
   @IsNumber()
   id: number;
 }
+
+export class OrderAdminUpdate {
+  @IsNotEmpty()
+  @IsEnum(OrderStatus)
+  orderStatus: OrderStatus;
+
+  @IsOptional()
+  @IsString()
+  adminId?: string;
+
+  @IsOptional()
+  @IsNumber()
+  productId?: number;
+}
