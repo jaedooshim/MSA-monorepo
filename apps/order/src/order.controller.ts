@@ -1,9 +1,11 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderCreateDto } from './types/create/request.dto';
 import { NonMemberGuard } from '@app/guard/non-member.guard';
 import { Member } from '@app/decorators/member.decorator';
-import { OrderParamDto, OrderUpdateDto } from './types/update/request.dto';
+import { OrderAdminUpdate, OrderParamDto, OrderUpdateDto } from './types/update/request.dto';
+import { SalesRoleGuard } from '@app/guard/sales.role.guard';
+import { Sales } from '@app/decorators/sales.decorator';
 
 @Controller('orders')
 export class OrderController {
@@ -22,4 +24,12 @@ export class OrderController {
     const data = { ...body, memberId: member?.id };
     return await this.orderService.update(param.id, data);
   }
+
+  @Patch(':id')
+  @UseGuards(SalesRoleGuard)
+  async adminUpdate(@Body() body: OrderAdminUpdate, @Param() param: OrderParamDto, @Sales() sales): Promise<string> {
+    return await this.orderService.adminUpdate(param.id, body, sales.id);
+  }
+
+  // 삭제 =>
 }
