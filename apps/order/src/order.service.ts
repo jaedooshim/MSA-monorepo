@@ -1,8 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { IOrderCreate } from './types/create/request.interface';
 import { ProductService } from '../../product/src/product.service';
-import { IOrderUpdate } from './types/update/request.interface';
+import { IOrderAdminUpdate, IOrderUpdate } from './types/update/request.interface';
 
 @Injectable()
 export class OrderService {
@@ -28,11 +28,32 @@ export class OrderService {
   }
 
   async update(id: number, data: IOrderUpdate): Promise<string> {
-    await this.productService.findUnique(data.productId);
     await this.orderRepository.findUniqueOrThrow(id);
-    const nonMember = await this.orderRepository.findUniqueAuthCode(data.authKey);
-    if (data.authKey !== nonMember.authKey) throw new ConflictException('시리얼번호가 일치하지 않습니다. \n 다시 한번 확인해주세요.');
+    await this.productService.findUnique(data.productId);
+    // 비회원 수정
+    if (data.authKey) {
+      const nonMember = await this.orderRepository.findUniqueAuthCode(data.authKey);
+      if (data.authKey !== nonMember.authKey) {
+        throw new ConflictException('시리얼번호가 일치하지 않습니다. \n 다시 한번 확인해주세요.');
+      } else if (data.orderStatus === 'Complete') {
+        throw new UnauthorizedException('해당하는 상태로 변경할 권한이 없습니다.');
+      }
+    }
+    // 회원 수정
+    if (data.orderStatus === 'Complete') throw new UnauthorizedException('해당하는 상태로 변경할 권한이 없습니다.');
     await this.orderRepository.update(id, data);
     return '주문건이 수정되었습니다.';
   }
+
+  async adminUpdate(id: number, data: IOrderAdminUpdate, salesId: string): Promise<string> {
+    await this.orderRepository.findUniqueOrThrow(id);
+    const product = await this.productService.findUnique(data.productId);
+    console.log('등록된 상품 판매자', product.adminId);
+    console.log('요청한 토큰의 판매자', salesId);
+    if (product.adminId !== salesId) throw new UnauthorizedException('해당하는 상품의 판매자가 아닙니다.');
+    await this.orderRepository.adminUpdate(id, data);
+    return '해당하는 주문상태를 업데이트 하였습니다.';
+  }
+
+  // 삭제 =>
 }
