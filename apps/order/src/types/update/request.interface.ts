@@ -6,3 +6,9 @@ export interface IOrderUpdate {
   memberId?: string;
   productId?: number;
 }
+
+export interface IOrderAdminUpdate {
+  orderStatus: $Enums.OrderStatus;
+  adminId?: string;
+  productId?: number;
+}
