@@ -17,6 +17,8 @@ export class OrderRepository {
   async update(id: number, data: IOrderUpdate): Promise<Order> {
     return await this.orderRepository.update({ where: { id }, data });
   }
+
+  // 비회원전용 authCode
   async authCode() {
     return Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000;
   }
