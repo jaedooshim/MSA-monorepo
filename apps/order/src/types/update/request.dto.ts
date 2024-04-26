@@ -6,9 +6,9 @@ export class OrderUpdateDto {
   @IsEnum(OrderStatus)
   orderStatus?: OrderStatus;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  productId: number;
+  productId?: number;
 
   @IsOptional()
   @IsString()
@@ -17,4 +17,10 @@ export class OrderUpdateDto {
   @IsOptional()
   @IsString()
   authKey?: string;
+}
+
+export class OrderParamDto {
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
 }
