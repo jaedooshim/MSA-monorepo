@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderCreateDto } from './types/create/request.dto';
 import { NonMemberGuard } from '@app/guard/non-member.guard';
@@ -6,6 +6,9 @@ import { Member } from '@app/decorators/member.decorator';
 import { OrderAdminUpdate, OrderParamDto, OrderUpdateDto } from './types/update/request.dto';
 import { SalesRoleGuard } from '@app/guard/sales.role.guard';
 import { Sales } from '@app/decorators/sales.decorator';
+import { MemberAuthGuard } from '@app/guard/member.auth.guard';
+import { OrderDeleteNonMemberDto } from './types/delete/request.dto';
+import { OrderFindManyDto } from './types/find-many/request.dto';
 
 @Controller('orders')
 export class OrderController {
@@ -31,5 +34,26 @@ export class OrderController {
     return await this.orderService.adminUpdate(param.id, body, sales.id);
   }
 
-  // 삭제 =>
+  @Delete(':id')
+  @UseGuards(MemberAuthGuard)
+  async delete(@Param() param: OrderParamDto, @Member() member): Promise<string> {
+    return await this.orderService.softDelete(param.id, member.id);
+  }
+
+  @Delete('nonmember/:id')
+  @UseGuards(NonMemberGuard)
+  async deleteNonMember(@Body() body: OrderDeleteNonMemberDto, @Param() param: OrderParamDto): Promise<string> {
+    return await this.orderService.softDeleteNonMember(param.id, body);
+  }
+
+  @Get(':id')
+  @UseGuards(NonMemberGuard)
+  async findUnique(@Param() param: OrderParamDto) {
+    return await this.orderService.findUnique(param.id);
+  }
+
+  @Get()
+  async findMany(@Query() query: OrderFindManyDto) {
+    return await this.orderService.findMany(query);
+  }
 }
