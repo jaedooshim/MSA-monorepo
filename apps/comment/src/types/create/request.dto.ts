@@ -8,12 +8,4 @@ export class CommentCreateDto {
   @IsNotEmpty()
   @IsNumber()
   productId: number;
-
-  @IsOptional()
-  @IsString()
-  memberId: string;
-
-  @IsOptional()
-  @IsString()
-  adminId: string;
 }
