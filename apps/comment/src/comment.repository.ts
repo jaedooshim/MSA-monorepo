@@ -9,7 +9,13 @@ export class CommentRepository {
 
   private commentRepository = this.prisma.extendedClient.comment;
 
+  // 회원 댓글생성
   async create(data: ICommentCreate): Promise<Comment> {
+    return await this.commentRepository.create({ data });
+  }
+
+  // 판매자 댓글생성
+  async salesCreate(data: ICommentCreate): Promise<Comment> {
     return await this.commentRepository.create({ data });
   }
 }
