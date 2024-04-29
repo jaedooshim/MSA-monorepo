@@ -20,7 +20,13 @@ export class CommentRepository {
     return await this.commentRepository.create({ data });
   }
 
+  // 회원 본인 댓글수정
   async update(id: number, data: ICommentUpdate): Promise<Comment> {
+    return await this.commentRepository.update({ where: { id }, data });
+  }
+
+  // 판매자 본인 댓글수정
+  async salesUpdate(id: number, data: ICommentUpdate): Promise<Comment> {
     return await this.commentRepository.update({ where: { id }, data });
   }
 
