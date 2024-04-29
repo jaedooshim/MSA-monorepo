@@ -153,6 +153,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/comment/tsconfig.app.json"
       }
+    },
+    "nonmember_board": {
+      "type": "application",
+      "root": "apps/nonmember_board",
+      "entryFile": "main",
+      "sourceRoot": "apps/nonmember_board/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/nonmember_board/tsconfig.app.json"
+      }
     }
   }
 }
