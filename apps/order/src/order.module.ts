@@ -10,5 +10,6 @@ import { JwtModule } from '@app/jwt';
   imports: [PrismaModule, ProductModule, JwtModule],
   controllers: [OrderController],
   providers: [OrderService, OrderRepository],
+  exports: [OrderService],
 })
 export class OrderModule {}
