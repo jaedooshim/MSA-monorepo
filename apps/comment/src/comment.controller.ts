@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { MemberAuthGuard } from '@app/guard/member.auth.guard';
 import { CommentCreateDto } from './types/create/request.dto';
@@ -6,6 +6,8 @@ import { Member } from '@app/decorators/member.decorator';
 import { SalesRoleGuard } from '@app/guard/sales.role.guard';
 import { Sales } from '@app/decorators/sales.decorator';
 import { CommentParamDto, CommentUpdateDto } from './types/update/request.dto';
+import { Comment } from '@prisma/client';
+import { CommentFindMany } from './types/find-many/request.dto';
 
 @Controller('comments')
 export class CommentController {
@@ -38,5 +40,27 @@ export class CommentController {
   @UseGuards(SalesRoleGuard)
   async salesUpdate(@Body() body: CommentUpdateDto, @Param() param: CommentParamDto, @Sales() sales): Promise<string> {
     return await this.commentService.salesUpdate(param.id, body, sales.id);
+  }
+
+  @Delete(':id')
+  @UseGuards(MemberAuthGuard)
+  async delete(@Param() param: CommentParamDto, @Member() member): Promise<string> {
+    return await this.commentService.softDelete(param.id, member.id);
+  }
+
+  @Delete('sales/:id')
+  @UseGuards(SalesRoleGuard)
+  async salesDelete(@Param() param: CommentParamDto, @Sales() sales): Promise<string> {
+    return await this.commentService.salesSoftDelete(param.id, sales.id);
+  }
+
+  @Get(':id')
+  async findUnique(@Param() param: CommentParamDto): Promise<Comment> {
+    return await this.commentService.findUnique(param.id);
+  }
+
+  @Get()
+  async findMany(@Query() query: CommentFindMany) {
+    return await this.commentService.findMany(query);
   }
 }
