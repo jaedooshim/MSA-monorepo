@@ -27,4 +27,12 @@ export class CommentService {
     await this.commentRepository.update(id, data);
     return '댓글수정이 완료되었습니다.';
   }
+
+  // 판매자 본인 댓글수정
+  async salesUpdate(id: number, data: ICommentUpdate, salesId: string): Promise<string> {
+    const comment = await this.commentRepository.findUniqueOrThrow(id);
+    if (comment.adminId !== salesId) throw new UnauthorizedException('해당 댓글수정에 관한 권한이 없습니다.');
+    await this.commentRepository.salesUpdate(id, data);
+    return '댓글수정이 완료되었습니다.';
+  }
 }
