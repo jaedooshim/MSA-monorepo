@@ -32,4 +32,11 @@ export class CommentController {
   async update(@Body() body: CommentUpdateDto, @Param() param: CommentParamDto, @Member() member): Promise<string> {
     return await this.commentService.update(param.id, body, member.id);
   }
+
+  // 판매자 본인 댓글 수정
+  @Patch('sales/:id')
+  @UseGuards(SalesRoleGuard)
+  async salesUpdate(@Body() body: CommentUpdateDto, @Param() param: CommentParamDto, @Sales() sales): Promise<string> {
+    return await this.commentService.salesUpdate(param.id, body, sales.id);
+  }
 }
