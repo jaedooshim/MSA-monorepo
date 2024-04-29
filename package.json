@@ -26,7 +26,8 @@
     "start:category": "nest start category --debug --watch",
     "start:product": "nest start product --debug --watch",
     "start:order": "nest start order --debug --watch",
-    "start:comment": "nest start comment --debug --watch"
+    "start:comment": "nest start comment --debug --watch",
+    "start:nonmember_board": "nest start nonmember_board --debug --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
