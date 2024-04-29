@@ -105,14 +105,28 @@ enum OrderStatus {
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  orderStatus OrderStatus
-  authKey     String?     @unique @map("auth_key")
-  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamp(3)
-  updatedAt   DateTime?   @updatedAt @map("updated_at") @db.Timestamp(3)
-  deletedAt   DateTime?   @map("deleted_at") @db.Timestamp(3)
-  Product     Product?    @relation(fields: [productId], references: [id])
-  productId   Int?
-  Member      Member?     @relation(fields: [memberId], references: [id])
-  memberId    String?
+  id               Int                @id @default(autoincrement())
+  orderStatus      OrderStatus
+  authKey          String?            @unique @map("auth_key")
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt        DateTime?          @updatedAt @map("updated_at") @db.Timestamp(3)
+  deletedAt        DateTime?          @map("deleted_at") @db.Timestamp(3)
+  Product          Product?           @relation(fields: [productId], references: [id])
+  productId        Int?
+  Member           Member?            @relation(fields: [memberId], references: [id])
+  memberId         String?
+  nonMember_boards NonMember_Boards[]
+}
+
+model NonMember_Boards {
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar()
+  name      String    @db.VarChar()
+  email     String    @db.VarChar()
+  content   String    @db.VarChar()
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(3)
+  Order     Order?    @relation(fields: [orderId], references: [id])
+  orderId   Int?
 }
