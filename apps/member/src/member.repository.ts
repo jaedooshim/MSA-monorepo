@@ -1,8 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
-import { IMemberCreate } from './types/create/request.interface';
-import { Member } from '@prisma/client';
-import { IMemberUpdate } from './types/update/request.interface';
+import { Member, Prisma } from '@prisma/client';
 import { IMemberFindMany } from './types/find-many/request.interface';
 
 @Injectable()
@@ -11,12 +9,12 @@ export class MemberRepository {
 
   private memberRepository = this.prisma.extendedClient.member;
 
-  async create(data: IMemberCreate): Promise<Member> {
+  async create(data: Prisma.MemberUncheckedCreateInput): Promise<Member> {
     return this.memberRepository.create({ data });
   }
 
-  async update(id: string, data: IMemberUpdate): Promise<Member> {
-    return this.memberRepository.update({ where: { id }, data: { ...data } });
+  async update(id: string, data: Prisma.MemberUncheckedUpdateInput): Promise<Member> {
+    return this.memberRepository.update({ where: { id }, data });
   }
 
   async softDelete(id: string): Promise<Member> {
@@ -30,7 +28,7 @@ export class MemberRepository {
   }
 
   async findMany(data: IMemberFindMany) {
-    return this.prisma.member.findMany({
+    return await this.prisma.member.findMany({
       take: data.take,
       skip: (data.page - 1) * data.take,
       orderBy: {
