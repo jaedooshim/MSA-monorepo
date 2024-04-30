@@ -1,9 +1,8 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { MemberRepository } from './member.repository';
-import { IMemberCreate } from './types/create/request.interface';
 import { BcryptService } from '@app/bcrypt';
-import { IMemberUpdate } from './types/update/request.interface';
 import { IMemberFindMany } from './types/find-many/request.interface';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MemberService {
@@ -12,7 +11,7 @@ export class MemberService {
     private bcryptService: BcryptService,
   ) {}
 
-  async create(data: IMemberCreate): Promise<string> {
+  async create(data: Prisma.MemberUncheckedCreateInput): Promise<string> {
     await this.memberRepository.isValidEmail(data.email);
     await this.memberRepository.isValidPhoneNumber(data.phoneNumber);
     data.password = await this.bcryptService.hash(data.password);
@@ -20,12 +19,12 @@ export class MemberService {
     return '멤버가 정상적으로 생성되었습니다.';
   }
 
-  async update(id: string, data: IMemberUpdate): Promise<string> {
+  async updateOwn(id: string, data: Prisma.MemberUncheckedUpdateInput): Promise<string> {
     const member = await this.memberRepository.findUniqueOrThrow(id);
-    if (data.email && member.email !== data.email) {
+    if (typeof data.email === 'string' && member.email !== data.email) {
       await this.memberRepository.isValidEmail(data.email);
     }
-    if (data.phoneNumber && member.phoneNumber !== data.phoneNumber) {
+    if (typeof data.phoneNumber === 'string' && member.phoneNumber !== data.phoneNumber) {
       await this.memberRepository.isValidPhoneNumber(data.phoneNumber);
     }
     await this.memberRepository.update(id, data);
@@ -39,9 +38,11 @@ export class MemberService {
   }
 
   async updatePassword(id: string, oldPassword: string, newPassword: string): Promise<string> {
+    console.log('id', id);
     const member = await this.memberRepository.findUniqueOrThrow(id);
     const password = await this.bcryptService.compare(oldPassword, member.password);
-    console.log(oldPassword, member.password);
+    console.log('oldPassword', oldPassword);
+    console.log('newPassword', newPassword);
     if (!password) throw new ConflictException('비밀번호가 일치하지 않습니다.');
 
     const hashPassword = await this.bcryptService.hash(newPassword);
