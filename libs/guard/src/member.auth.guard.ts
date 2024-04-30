@@ -14,10 +14,10 @@ export class MemberAuthGuard implements CanActivate {
 
   async validateRequest(req: IRequest): Promise<boolean> {
     let accessToken = req.headers.authorization;
-    // console.log('accessToken', accessToken);
+    console.log('authorization', accessToken);
     if (!accessToken) throw new UnauthorizedException('비회원은 이용하실 수 없는 서비스입니다.');
     accessToken = accessToken.split(' ')[1];
-    console.log('accessToken', accessToken);
+    // console.log('accessToken', accessToken);
 
     const payload = this.jwtService.verify(accessToken);
     // console.log('payload', payload);
