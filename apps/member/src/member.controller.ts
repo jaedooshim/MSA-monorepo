@@ -14,13 +14,11 @@ export class MemberController {
   }
 
   @MessagePattern('update_own_member')
-  // @UseGuards(MemberAuthGuard)
   async updateOwn(data: { id: string; body: Prisma.MemberUncheckedUpdateInput }): Promise<string> {
     return await this.memberService.updateOwn(data.id, data.body);
   }
 
   @MessagePattern('update_own_password')
-  // @UseGuards(MemberAuthGuard)
   async updateOwnPassword(@Payload() payload: { id: string; oldPassword: string; newPassword: string }): Promise<string> {
     const { id, oldPassword, newPassword } = payload;
     console.log('payload', payload);
@@ -28,7 +26,6 @@ export class MemberController {
   }
 
   @MessagePattern('delete_own_member')
-  // @UseGuards(MemberAuthGuard)
   async deleteOwn(data: { id: string }): Promise<string> {
     return await this.memberService.softDelete(data.id);
   }
