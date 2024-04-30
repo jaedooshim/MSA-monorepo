@@ -18,7 +18,9 @@ export class MSAExceptionFilter implements ExceptionFilter {
 
     const status = exception?.response?.statusCode;
     const errorBody = exception?.response;
-
+    // console.log('status', status);
+    // console.log('errorBody', errorBody);
+    console.log('Exception', exception);
     if (status && errorBody) {
       return response.status(status).json(errorBody);
     } else {
