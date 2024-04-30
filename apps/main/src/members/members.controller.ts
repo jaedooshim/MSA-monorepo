@@ -4,6 +4,7 @@ import { CreateMemberDto } from '../../../member/src/types/create/request.dto';
 import { MemberParamDto, UpdateMemberDto, UpdatePasswordDto } from '../../../member/src/types/update/request.dto';
 import { MemberAuthGuard } from '@app/guard/member.auth.guard';
 import { MemberFindManyDto } from '../../../member/src/types/find-many/request.dto';
+import { Member } from '@app/decorators/member.decorator';
 
 @Controller('members')
 export class MembersController {
@@ -15,13 +16,16 @@ export class MembersController {
   }
 
   @Put(':id')
-  // @UseGuards(MemberAuthGuard)
-  async update(@Body() body: UpdateMemberDto, @Param() param: MemberParamDto) {
-    return this.client.send<string>('update_own_member', { id: param.id, body });
+  @UseGuards(MemberAuthGuard)
+  async update(@Body() body: UpdateMemberDto, @Param() param: MemberParamDto, @Member() member) {
+    console.log('id', param.id);
+    console.log('body', body);
+    console.log('memberId', member);
+    return this.client.send<string>('update_own_member', { id: param.id, body, memberId: member.id });
   }
 
   @Patch(':id/password')
-  // @UseGuards(MemberAuthGuard)
+  @UseGuards(MemberAuthGuard)
   async updatePassword(@Body() body: UpdatePasswordDto, @Param() param: MemberParamDto) {
     console.log('param.id', param.id);
     console.log('body', body);
@@ -29,7 +33,7 @@ export class MembersController {
   }
 
   @Delete(':id')
-  // @UseGuards(MemberAuthGuard)
+  @UseGuards(MemberAuthGuard)
   async delete(@Param() param: MemberParamDto) {
     return this.client.send<string>('delete_own_member', { id: param.id });
   }
