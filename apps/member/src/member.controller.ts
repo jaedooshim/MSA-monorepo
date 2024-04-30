@@ -1,49 +1,46 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MemberService } from './member.service';
-import { CreateMemberDto } from './types/create/request.dto';
-import { MemberParamDto, UpdateMemberDto, UpdatePasswordDto } from './types/update/request.dto';
 import { MemberFindManyDto } from './types/find-many/request.dto';
-import { MemberAuthGuard } from '@app/guard/member.auth.guard';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Prisma } from '@prisma/client';
 
 @Controller('member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
-  @Post()
-  async create(@Body() body: CreateMemberDto): Promise<string> {
+  @MessagePattern('create_member')
+  async create(body: Prisma.MemberUncheckedCreateInput): Promise<string> {
     return await this.memberService.create(body);
   }
 
-  // @MessagePattern('update_own_member')
-  @Put(':id')
-  @UseGuards(MemberAuthGuard)
-  async updateOwn(@Body() body: UpdateMemberDto, @Param() param: MemberParamDto): Promise<string> {
-    return await this.memberService.update(param.id, body);
+  @MessagePattern('update_own_member')
+  // @UseGuards(MemberAuthGuard)
+  async updateOwn(data: { id: string; body: Prisma.MemberUncheckedUpdateInput }): Promise<string> {
+    return await this.memberService.updateOwn(data.id, data.body);
   }
 
-  // @MessagePattern('update_own_password')
-  @Patch(':id')
-  @UseGuards(MemberAuthGuard)
-  async updateOwnPassword(@Body() body: UpdatePasswordDto, @Param() param: MemberParamDto): Promise<string> {
-    return await this.memberService.updatePassword(param.id, body.oldPassword, body.newPassword);
+  @MessagePattern('update_own_password')
+  // @UseGuards(MemberAuthGuard)
+  async updateOwnPassword(@Payload() payload: { id: string; oldPassword: string; newPassword: string }): Promise<string> {
+    const { id, oldPassword, newPassword } = payload;
+    console.log('payload', payload);
+    return await this.memberService.updatePassword(id, oldPassword, newPassword);
   }
 
-  // @MessagePattern('delete_own_member')
-  @Delete(':id')
-  @UseGuards(MemberAuthGuard)
-  async deleteOwn(@Param() param: MemberParamDto): Promise<string> {
-    return await this.memberService.softDelete(param.id);
+  @MessagePattern('delete_own_member')
+  // @UseGuards(MemberAuthGuard)
+  async deleteOwn(data: { id: string }): Promise<string> {
+    return await this.memberService.softDelete(data.id);
   }
 
-  // @MessagePattern('find_unique_member')
-  @Get(':id')
-  async findUnique(@Param() param: MemberParamDto) {
-    return await this.memberService.findUnique(param.id);
+  @MessagePattern('find_unique_member')
+  async findUnique(data: { id: string }) {
+    console.log('id', data.id);
+    return await this.memberService.findUnique(data.id);
   }
 
-  // @MessagePattern('find_many_member')
-  @Get()
-  async findMany(@Query() query: MemberFindManyDto) {
-    return await this.memberService.findMany(query);
+  @MessagePattern('find_many_member')
+  async findMany(data: MemberFindManyDto) {
+    return await this.memberService.findMany(data);
   }
 }
