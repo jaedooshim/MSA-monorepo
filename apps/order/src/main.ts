@@ -1,9 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { OrderModule } from './order.module';
 import { ValidationPipe } from '@nestjs/common';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(OrderModule);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(OrderModule, {
+    transport: Transport.TCP,
+    options: {
+      host: '127.0.0.1',
+      port: 3007,
+    },
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,6 +22,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters();
-  await app.listen(3007);
+  await app.listen();
 }
 bootstrap();
