@@ -1,43 +1,35 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { SalesRoleGuard } from '@app/guard/sales.role.guard';
-import { ProductCreateDto } from './types/create/request.dto';
-import { Sales } from '@app/decorators/sales.decorator';
-import { ProductParamDto, ProductUpdateDto } from './types/update/request.dto';
-import { Product } from '@prisma/client';
+import { Prisma, Product } from '@prisma/client';
 import { ProductFindMany } from './types/find-many/request.dto';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
-  @UseGuards(SalesRoleGuard)
-  async create(@Body() body: ProductCreateDto, @Sales() sales): Promise<string> {
-    const data = { ...body, adminId: sales.id };
-    return await this.productService.create(data);
+  @MessagePattern('create_product')
+  async create(body: Prisma.ProductUncheckedCreateInput): Promise<string> {
+    return await this.productService.create(body);
   }
 
-  @Put(':id')
-  @UseGuards(SalesRoleGuard)
-  async update(@Body() body: ProductUpdateDto, @Sales() sales, @Param() param: ProductParamDto): Promise<string> {
-    const data = { ...body, adminId: sales.id };
-    return await this.productService.update(param.id, data, sales.id);
+  @MessagePattern('update_product')
+  async update(data: { id: number; body: Prisma.ProductUncheckedUpdateInput; adminId: string }): Promise<string> {
+    return await this.productService.update(data.id, data.body, data.adminId);
   }
 
-  @Delete(':id')
-  @UseGuards(SalesRoleGuard)
-  async delete(@Param() param: ProductParamDto, @Sales() sales): Promise<string> {
-    return await this.productService.softDelete(param.id, sales.id);
+  @MessagePattern('delete_product')
+  async delete(data: { id: number; adminId: string }): Promise<string> {
+    return await this.productService.softDelete(data.id, data.adminId);
   }
 
-  @Get(':id')
-  async getProduct(@Param() param: ProductParamDto): Promise<Product> {
-    return await this.productService.findUnique(param.id);
+  @MessagePattern('find_unique_product')
+  async getProduct(data: { id: number }): Promise<Product> {
+    return await this.productService.findUnique(data.id);
   }
 
-  @Get()
-  async findMany(@Query() query: ProductFindMany) {
-    return this.productService.findMany(query);
+  @MessagePattern('find_many_product')
+  async findMany(data: ProductFindMany) {
+    return this.productService.findMany(data);
   }
 }
