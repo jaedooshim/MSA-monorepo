@@ -1,44 +1,40 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { AdminCreateDto } from './types/create/request.dto';
-import { AdminParamDto, UpdateAdminDto, UpdatePasswordDto } from './types/update/request.dto';
 import { adminFindManyDto } from './types/find-many/request.dto';
-import { AdminRoleGuard } from '@app/guard/admin.role.guard';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Prisma } from '@prisma/client';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Post()
-  async create(@Body() body: AdminCreateDto): Promise<string> {
+  @MessagePattern('create_admin')
+  async create(body: Prisma.AdminUncheckedCreateInput): Promise<string> {
     return await this.adminService.create(body);
   }
 
-  @Put(':id')
-  @UseGuards(AdminRoleGuard)
-  async update(@Body() body: UpdateAdminDto, @Param() param: AdminParamDto): Promise<string> {
-    return await this.adminService.update(param.id, body);
+  @MessagePattern('update_admin')
+  async update(data: { id: string; body: Prisma.AdminUncheckedUpdateInput }): Promise<string> {
+    return await this.adminService.update(data.id, data.body);
   }
 
-  @Patch(':id')
-  @UseGuards(AdminRoleGuard)
-  async updatePassword(@Param() param: AdminParamDto, @Body() body: UpdatePasswordDto) {
-    return await this.adminService.updatePassword(param.id, body.oldPassword, body.newPassword);
+  @MessagePattern('update_password')
+  async updatePassword(@Payload() payload: { id: string; oldPassword: string; newPassword: string }): Promise<string> {
+    return await this.adminService.updatePassword(payload.id, payload.oldPassword, payload.newPassword);
   }
 
-  @Delete(':id')
-  @UseGuards(AdminRoleGuard)
-  async delete(@Param() param: AdminParamDto): Promise<string> {
-    return await this.adminService.softDelete(param.id);
+  @MessagePattern('delete_admin')
+  async delete(data: { id: string }): Promise<string> {
+    return await this.adminService.softDelete(data.id);
   }
 
-  @Get(':id')
-  async getAdmin(@Param() param: AdminParamDto) {
-    return await this.adminService.findUnique(param.id);
+  @MessagePattern('find_unique_admin')
+  async getAdmin(data: { id: string }) {
+    return await this.adminService.findUnique(data.id);
   }
 
-  @Get()
-  async findMany(@Query() query: adminFindManyDto) {
-    return await this.adminService.findMany(query);
+  @MessagePattern('find_many_admin')
+  async findMany(data: adminFindManyDto) {
+    return await this.adminService.findMany(data);
   }
 }
