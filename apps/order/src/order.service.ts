@@ -4,7 +4,7 @@ import { IOrderCreate } from './types/create/request.interface';
 import { ProductService } from '../../product/src/product.service';
 import { IOrderAdminUpdate, IOrderUpdate } from './types/update/request.interface';
 import { IOrderDeleteNonMember } from './types/delete/request.interface';
-import { Order } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 import { IOrderFindMany } from './types/find-many/request.interface';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class OrderService {
     private productService: ProductService,
   ) {}
 
-  async create(data: IOrderCreate): Promise<string | { message: string; authCode?: string }> {
+  async create(data: Prisma.OrderUncheckedCreateInput): Promise<string | { message: string; authCode?: string }> {
     await this.productService.findUnique(data.productId);
     // 비회원 반환값
     if (!data.memberId) {
