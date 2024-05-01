@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { IOrderCreate } from './types/create/request.interface';
-import { Order } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 import { IOrderAdminUpdate, IOrderUpdate } from './types/update/request.interface';
 import { IOrderFindMany } from './types/find-many/request.interface';
 
@@ -11,7 +11,7 @@ export class OrderRepository {
 
   private orderRepository = this.prisma.extendedClient.order;
 
-  async create(data: IOrderCreate): Promise<Order> {
+  async create(data: Prisma.OrderUncheckedCreateInput): Promise<Order> {
     return await this.orderRepository.create({ data });
   }
 
