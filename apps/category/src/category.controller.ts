@@ -1,40 +1,35 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CategoryCreate } from './types/create/request.dto';
-import { OperatorsRoleGuard } from '@app/guard/operators.role.guard';
-import { CategoryParamDto, CategoryUpdateDto } from './types/update/request.dto';
-import { Category } from '@prisma/client';
+import { Category, Prisma } from '@prisma/client';
 import { FindManyDto } from './types/find-many/request.dto';
+import { MessagePattern } from '@nestjs/microservices';
 
-@Controller('categorys')
+@Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Post()
-  @UseGuards(OperatorsRoleGuard)
-  async create(@Body() body: CategoryCreate): Promise<string> {
+  @MessagePattern('create_category')
+  async create(body: Prisma.CategoryUncheckedCreateInput): Promise<string> {
     return await this.categoryService.create(body);
   }
 
-  @Patch(':id')
-  @UseGuards(OperatorsRoleGuard)
-  async update(@Body() body: CategoryUpdateDto, @Param() param: CategoryParamDto): Promise<string> {
-    return await this.categoryService.update(param.id, body);
+  @MessagePattern('update_category')
+  async update(data: { id: number; body: Prisma.CategoryUncheckedUpdateInput }): Promise<string> {
+    return await this.categoryService.update(data.id, data.body);
   }
 
-  @Delete(':id')
-  @UseGuards(OperatorsRoleGuard)
-  async delete(@Param() param: CategoryParamDto): Promise<string> {
-    return await this.categoryService.softDelete(param.id);
+  @MessagePattern('delete_category')
+  async delete(data: { id: number }): Promise<string> {
+    return await this.categoryService.softDelete(data.id);
   }
 
-  @Get(':id')
-  async findUnique(@Param() param: CategoryParamDto): Promise<Category> {
-    return await this.categoryService.findUnique(param.id);
+  @MessagePattern('find_unique_category')
+  async findUnique(data: { id: number }): Promise<Category> {
+    return await this.categoryService.findUnique(data.id);
   }
 
-  @Get()
-  async findMany(@Query() query: FindManyDto) {
-    return this.categoryService.findMany(query);
+  @MessagePattern('find_many_category')
+  async findMany(data: FindManyDto) {
+    return this.categoryService.findMany(data);
   }
 }
