@@ -1,8 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
-import { ICategoryCreate } from './types/create/request.interface';
-import { Category } from '@prisma/client';
-import { ICategoryUpdate } from './types/update/request.interface';
+import { Category, Prisma } from '@prisma/client';
 import { IFindMany } from './types/find-many/request.interface';
 
 @Injectable()
@@ -11,11 +9,11 @@ export class CategoryRepository {
 
   private categoryRepository = this.prisma.extendedClient.category;
 
-  async create(data: ICategoryCreate): Promise<Category> {
+  async create(data: Prisma.CategoryUncheckedCreateInput): Promise<Category> {
     return await this.categoryRepository.create({ data });
   }
 
-  async update(id: number, data: ICategoryUpdate): Promise<Category> {
+  async update(id: number, data: Prisma.CategoryUncheckedUpdateInput): Promise<Category> {
     return await this.categoryRepository.update({ where: { id }, data });
   }
 
