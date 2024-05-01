@@ -1,23 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CategoryRepository } from './category.repository';
-import { ICategoryCreate } from './types/create/request.interface';
-import { ICategoryUpdate } from './types/update/request.interface';
-import { Category } from '@prisma/client';
+import { Category, Prisma } from '@prisma/client';
 import { IFindMany } from './types/find-many/request.interface';
 
 @Injectable()
 export class CategoryService {
   constructor(private categoryRepository: CategoryRepository) {}
 
-  async create(data: ICategoryCreate): Promise<string> {
+  async create(data: Prisma.CategoryUncheckedCreateInput): Promise<string> {
     await this.categoryRepository.isValidName(data.name);
     await this.categoryRepository.create(data);
     return '카테고리가 생성되었습니다.';
   }
 
-  async update(id: number, data: ICategoryUpdate): Promise<string> {
+  async update(id: number, data: Prisma.CategoryUncheckedUpdateInput): Promise<string> {
     const category = await this.categoryRepository.findUniqueOrThrow(id);
-    if (data.name && category.name !== data.name) {
+    if (typeof data.name === 'string' && category.name !== data.name) {
       await this.categoryRepository.isValidName(data.name);
     }
     await this.categoryRepository.update(id, data);
