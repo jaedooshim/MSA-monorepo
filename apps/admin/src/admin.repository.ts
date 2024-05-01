@@ -1,8 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
-import { IAdminCreate } from './types/create/request.interface';
-import { Admin } from '@prisma/client';
-import { IAdminUpdate } from './types/update/request.interface';
+import { Admin, Prisma } from '@prisma/client';
 import { IFindMany } from './types/find-many/request.interface';
 
 @Injectable()
@@ -11,11 +9,11 @@ export class AdminRepository {
 
   private adminRepository = this.prisma.extendedClient.admin;
 
-  async create(data: IAdminCreate): Promise<Admin> {
+  async create(data: Prisma.AdminUncheckedCreateInput): Promise<Admin> {
     return await this.adminRepository.create({ data });
   }
 
-  async update(id: string, data: IAdminUpdate): Promise<Admin> {
+  async update(id: string, data: Prisma.AdminUncheckedUpdateInput): Promise<Admin> {
     return await this.adminRepository.update({ where: { id }, data });
   }
 
