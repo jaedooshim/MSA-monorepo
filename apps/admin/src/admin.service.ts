@@ -1,9 +1,8 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { AdminRepository } from './admin.repository';
-import { IAdminCreate } from './types/create/request.interface';
 import { BcryptService } from '@app/bcrypt';
-import { IAdminUpdate } from './types/update/request.interface';
 import { IFindMany } from './types/find-many/request.interface';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
@@ -12,7 +11,7 @@ export class AdminService {
     private bcryptService: BcryptService,
   ) {}
 
-  async create(data: IAdminCreate): Promise<string> {
+  async create(data: Prisma.AdminUncheckedCreateInput): Promise<string> {
     await this.adminRepository.isValidEmail(data.email);
     await this.adminRepository.isValidPhoneNumber(data.phoneNumber);
     data.password = await this.bcryptService.hash(data.password);
@@ -20,12 +19,12 @@ export class AdminService {
     return '가입이 정상적으로 처리되었습니다.';
   }
 
-  async update(id: string, data: IAdminUpdate): Promise<string> {
+  async update(id: string, data: Prisma.AdminUncheckedUpdateInput): Promise<string> {
     const admin = await this.findUnique(id);
-    if (data.email && admin.email !== data.email) {
+    if (typeof data.email === 'string' && admin.email !== data.email) {
       await this.adminRepository.isValidEmail(data.email);
     }
-    if (data.phoneNumber && admin.phoneNumber !== data.phoneNumber) {
+    if (typeof data.phoneNumber === 'string' && admin.phoneNumber !== data.phoneNumber) {
       await this.adminRepository.isValidPhoneNumber(data.phoneNumber);
     }
     await this.adminRepository.update(id, data);
