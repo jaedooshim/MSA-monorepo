@@ -17,6 +17,8 @@ export class AuthService {
   async login(data: ILogin) {
     const member = await this.memberService.findEmail(data.email);
     const validPassword = await this.bcryptService.compare(data.password, member.password);
+    // console.log('입력된 비밀번호', data.password);
+    // console.log('멤버 비밀번호', member.password);
     if (!validPassword) throw new BadRequestException('비밀번호가 일치하지 않습니다.');
 
     const payload = { id: member.id, email: member.email, role: member.role };
