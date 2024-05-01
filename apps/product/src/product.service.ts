@@ -1,9 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ProductRepository } from './product.repository';
-import { IProductCreate } from './types/create/request.interface';
 import { CategoryService } from '../../category/src/category.service';
-import { IProductUpdate } from './types/update/request.interface';
-import { Product } from '@prisma/client';
+import { Prisma, Product } from '@prisma/client';
 import { IProductFindMany } from './types/find-many/request.interface';
 
 @Injectable()
@@ -13,16 +11,19 @@ export class ProductService {
     private categoryService: CategoryService,
   ) {}
 
-  async create(data: IProductCreate): Promise<string> {
+  async create(data: Prisma.ProductUncheckedCreateInput): Promise<string> {
     await this.categoryService.findUnique(data.categoryId);
     await this.productRepository.create(data);
     return '상품이 등록되었습니다.';
   }
 
-  async update(id: number, data: IProductUpdate, salesId: string): Promise<string> {
+  async update(id: number, data: Prisma.ProductUncheckedUpdateInput, adminId: string): Promise<string> {
+    if (typeof data.categoryId !== 'number') throw new ConflictException('카테고리 아이디를 다시 한번 확인해주세요.');
     await this.categoryService.findUnique(data.categoryId);
     const product = await this.productRepository.findUniqueOrThrow(id);
-    if (product.adminId !== salesId) throw new UnauthorizedException('해당 상품을 수정할 권한이 없습니다.');
+    console.log('상품 판매자', product.adminId);
+    console.log('요청한 판매자', adminId);
+    if (product.adminId !== adminId) throw new UnauthorizedException('해당 상품을 수정할 권한이 없습니다.');
     await this.productRepository.update(id, data);
     return '상품이 수정되었습니다.';
   }
