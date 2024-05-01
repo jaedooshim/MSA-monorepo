@@ -1,8 +1,6 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
-import { IProductCreate } from './types/create/request.interface';
-import { Product } from '@prisma/client';
-import { IProductUpdate } from './types/update/request.interface';
+import { Prisma, Product } from '@prisma/client';
 import { IProductFindMany } from './types/find-many/request.interface';
 
 @Injectable()
@@ -11,11 +9,11 @@ export class ProductRepository {
 
   private productRepository = this.prisma.extendedClient.product;
 
-  async create(data: IProductCreate): Promise<Product> {
+  async create(data: Prisma.ProductUncheckedCreateInput): Promise<Product> {
     return await this.productRepository.create({ data });
   }
 
-  async update(id: number, data: IProductUpdate): Promise<Product> {
+  async update(id: number, data: Prisma.ProductUncheckedUpdateInput): Promise<Product> {
     return await this.productRepository.update({ where: { id }, data });
   }
 
@@ -28,7 +26,7 @@ export class ProductRepository {
       take: data.take,
       skip: (data.page - 1) * data.take,
       orderBy: {
-        price: 'desc',
+        createdAt: 'asc',
       },
     });
   }
