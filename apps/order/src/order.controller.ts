@@ -9,20 +9,19 @@ import { Sales } from '@app/decorators/sales.decorator';
 import { MemberAuthGuard } from '@app/guard/member.auth.guard';
 import { OrderDeleteNonMemberDto } from './types/delete/request.dto';
 import { OrderFindManyDto } from './types/find-many/request.dto';
+import { MessagePattern } from '@nestjs/microservices';
+import { Prisma } from '@prisma/client';
 
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post()
-  @UseGuards(NonMemberGuard)
-  async create(@Body() body: OrderCreateDto, @Member() member?): Promise<string | { message: string; authCode?: string }> {
-    const data = { ...body, memberId: member?.id };
-    return await this.orderService.create(data);
+  @MessagePattern('create_order')
+  async create(body: Prisma.OrderUncheckedCreateInput): Promise<string | { message: string; authCode?: string }> {
+    return await this.orderService.create(body);
   }
 
-  @Put(':id')
-  @UseGuards(NonMemberGuard)
+  @MessagePattern('update_order')
   async update(@Body() body: OrderUpdateDto, @Param() param: OrderParamDto, @Member() member?): Promise<string> {
     const data = { ...body, memberId: member?.id };
     return await this.orderService.update(param.id, data);
