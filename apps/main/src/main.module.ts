@@ -8,9 +8,10 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { CommentsModule } from './comments/comments.module';
+import { NonMemberBoardsModule } from './non-member-boards/non-member-boards.module';
 
 @Module({
-  imports: [MembersModule, AuthsModule, AdminsModule, CategoriesModule, ProductsModule, OrdersModule, CommentsModule],
+  imports: [MembersModule, AuthsModule, AdminsModule, CategoriesModule, ProductsModule, OrdersModule, CommentsModule, NonMemberBoardsModule],
   controllers: [MainController],
   providers: [MainService],
 })
