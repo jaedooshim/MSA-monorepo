@@ -1,9 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
-import { IOrderCreate } from './types/create/request.interface';
 import { Order, Prisma } from '@prisma/client';
-import { IOrderAdminUpdate, IOrderUpdate } from './types/update/request.interface';
 import { IOrderFindMany } from './types/find-many/request.interface';
+import { OrderAdminUpdate, OrderUpdateDto } from './types/update/request.dto';
 
 @Injectable()
 export class OrderRepository {
@@ -15,11 +14,11 @@ export class OrderRepository {
     return await this.orderRepository.create({ data });
   }
 
-  async update(id: number, data: IOrderUpdate): Promise<Order> {
+  async update(id: number, data: OrderUpdateDto): Promise<Order> {
     return await this.orderRepository.update({ where: { id }, data });
   }
 
-  async adminUpdate(id: number, data: IOrderAdminUpdate): Promise<Order> {
+  async adminUpdate(id: number, data: OrderAdminUpdate): Promise<Order> {
     return await this.orderRepository.update({ where: { id }, data });
   }
 
