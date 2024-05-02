@@ -1,3 +1,4 @@
 export interface INonMemberBoardDelete {
-  orderId?: number;
+  authKey: string;
+  orderId: number;
 }
