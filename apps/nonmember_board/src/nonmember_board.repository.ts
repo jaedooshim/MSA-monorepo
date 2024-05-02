@@ -28,7 +28,18 @@ export class NonmemberBoardRepository {
   }
 
   async update(id: number, data: INonMemberBoardUpdate): Promise<NonMemberBoards> {
-    return await this.nonmemberBoardRepository.update({ where: { id }, data });
+    return await this.nonmemberBoardRepository.update({
+      where: { id },
+      data: {
+        title: data.title,
+        name: data.name,
+        email: data.email,
+        content: data.content,
+        Order: {
+          connect: { id: data.orderId },
+        },
+      },
+    });
   }
 
   async softDelete(id: number): Promise<NonMemberBoards> {
