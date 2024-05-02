@@ -2,14 +2,19 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AdminsController } from './admins.controller';
 import { JwtModule } from '@app/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ConfigModule.forRoot(),
+    ClientsModule.registerAsync([
       {
         name: 'ADMIN_SERVICE',
-        transport: Transport.TCP,
-        options: { host: '127.0.0.1', port: 3004 },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: { host: configService.get('TCP_HOST'), port: 3004 },
+        }),
+        inject: [ConfigService],
       },
     ]),
     JwtModule,

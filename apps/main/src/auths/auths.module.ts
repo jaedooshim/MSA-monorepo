@@ -1,14 +1,19 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthsController } from './auths.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ConfigModule.forRoot(),
+    ClientsModule.registerAsync([
       {
         name: 'AUTH_SERVICE',
-        transport: Transport.TCP,
-        options: { host: '127.0.0.1', port: 3003 },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: { host: configService.get('TCP_HOST'), port: 3003 },
+        }),
+        inject: [ConfigService],
       },
     ]),
   ],
