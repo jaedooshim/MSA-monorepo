@@ -1,7 +1,11 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class NonMemberBoardDeleteDto {
-  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  authKey: string;
+
+  @IsNotEmpty()
   @IsNumber()
-  orderId?: number;
+  orderId: number;
 }
