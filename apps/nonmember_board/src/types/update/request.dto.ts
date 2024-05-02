@@ -17,9 +17,13 @@ export class NonMemberBoardUpdateDto {
   @IsString()
   content?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   orderId: number;
+
+  @IsNotEmpty()
+  @IsString()
+  authKey: string;
 }
 
 export class NonMemberBoardParamDto {
