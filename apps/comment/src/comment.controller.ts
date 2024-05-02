@@ -1,66 +1,54 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { MemberAuthGuard } from '@app/guard/member.auth.guard';
-import { CommentCreateDto } from './types/create/request.dto';
-import { Member } from '@app/decorators/member.decorator';
-import { SalesRoleGuard } from '@app/guard/sales.role.guard';
-import { Sales } from '@app/decorators/sales.decorator';
-import { CommentParamDto, CommentUpdateDto } from './types/update/request.dto';
-import { Comment } from '@prisma/client';
+import { CommentUpdateDto } from './types/update/request.dto';
+import { Comment, Prisma } from '@prisma/client';
 import { CommentFindMany } from './types/find-many/request.dto';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   // 회원 댓글작성
-  @Post()
-  @UseGuards(MemberAuthGuard)
-  async create(@Body() body: CommentCreateDto, @Member() member): Promise<string> {
-    const data = { ...body, memberId: member.id };
-    return await this.commentService.create(data);
+  @MessagePattern('create_comment')
+  async create(body: Prisma.CommentUncheckedCreateInput): Promise<string> {
+    return await this.commentService.create(body);
   }
 
   //판매자 댓글작성
-  @Post('sales')
-  @UseGuards(SalesRoleGuard)
-  async salesCreate(@Body() body: CommentCreateDto, @Sales() sales): Promise<string> {
-    const data = { ...body, adminId: sales.id };
-    return await this.commentService.salesCreate(data);
+  @MessagePattern('create_sales_comment')
+  async salesCreate(body: Prisma.CommentUncheckedCreateInput): Promise<string> {
+    return await this.commentService.salesCreate(body);
   }
 
-  @Patch(':id')
-  @UseGuards(MemberAuthGuard)
-  async update(@Body() body: CommentUpdateDto, @Param() param: CommentParamDto, @Member() member): Promise<string> {
-    return await this.commentService.update(param.id, body, member.id);
+  @MessagePattern('update_comment')
+  async update(data: { id: number; body: CommentUpdateDto; memberId: string }): Promise<string> {
+    return await this.commentService.update(data.id, data.body, data.memberId);
   }
 
   // 판매자 본인 댓글 수정
-  @Patch('sales/:id')
-  @UseGuards(SalesRoleGuard)
-  async salesUpdate(@Body() body: CommentUpdateDto, @Param() param: CommentParamDto, @Sales() sales): Promise<string> {
-    return await this.commentService.salesUpdate(param.id, body, sales.id);
+  @MessagePattern('update_sales_comment')
+  async salesUpdate(data: { id: number; body: CommentUpdateDto; adminId: string }): Promise<string> {
+    return await this.commentService.salesUpdate(data.id, data.body, data.adminId);
   }
 
-  @Delete(':id')
-  @UseGuards(MemberAuthGuard)
-  async delete(@Param() param: CommentParamDto, @Member() member): Promise<string> {
-    return await this.commentService.softDelete(param.id, member.id);
+  @MessagePattern('delete_comment')
+  async delete(data: { id: number; memberId: string }): Promise<string> {
+    return await this.commentService.softDelete(data.id, data.memberId);
   }
 
-  @Delete('sales/:id')
-  @UseGuards(SalesRoleGuard)
-  async salesDelete(@Param() param: CommentParamDto, @Sales() sales): Promise<string> {
-    return await this.commentService.salesSoftDelete(param.id, sales.id);
+  @MessagePattern('delete_sales_comment')
+  async salesDelete(data: { id: number; adminId: string }): Promise<string> {
+    return await this.commentService.salesSoftDelete(data.id, data.adminId);
   }
 
-  @Get(':id')
-  async findUnique(@Param() param: CommentParamDto): Promise<Comment> {
-    return await this.commentService.findUnique(param.id);
+  @MessagePattern('find_unique_comment')
+  async findUnique(data: { id: number }): Promise<Comment> {
+    return await this.commentService.findUnique(data.id);
   }
 
-  @Get()
-  async findMany(@Query() query: CommentFindMany) {
+  @MessagePattern('find_many_comment')
+  async findMany(query: CommentFindMany) {
     return await this.commentService.findMany(query);
   }
 }
