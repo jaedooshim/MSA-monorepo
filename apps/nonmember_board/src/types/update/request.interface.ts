@@ -3,5 +3,6 @@ export interface INonMemberBoardUpdate {
   name?: string;
   email?: string;
   content?: string;
-  orderId?: number;
+  orderId: number;
+  authKey: string;
 }
