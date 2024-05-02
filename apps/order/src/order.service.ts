@@ -1,11 +1,10 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { IOrderCreate } from './types/create/request.interface';
 import { ProductService } from '../../product/src/product.service';
-import { IOrderAdminUpdate, IOrderUpdate } from './types/update/request.interface';
 import { IOrderDeleteNonMember } from './types/delete/request.interface';
 import { Order, Prisma } from '@prisma/client';
 import { IOrderFindMany } from './types/find-many/request.interface';
+import { OrderAdminUpdate, OrderUpdateDto } from './types/update/request.dto';
 
 @Injectable()
 export class OrderService {
@@ -33,11 +32,12 @@ export class OrderService {
     }
   }
 
-  async update(id: number, data: IOrderUpdate): Promise<string> {
+  async update(id: number, data: OrderUpdateDto): Promise<string> {
     await this.orderRepository.findUniqueOrThrow(id);
+    if (typeof data.productId !== 'number') throw new ConflictException('상품아이디는 숫자형식입니다.');
     await this.productService.findUnique(data.productId);
     // 비회원 수정
-    if (data.authKey) {
+    if (typeof data.authKey === 'string') {
       const nonMember = await this.orderRepository.findUniqueAuthCode(data.authKey);
       if (data.authKey !== nonMember.authKey) {
         throw new ConflictException('시리얼번호가 일치하지 않습니다. \n 다시 한번 확인해주세요.');
@@ -52,7 +52,7 @@ export class OrderService {
   }
 
   // 관리자 수정
-  async adminUpdate(id: number, data: IOrderAdminUpdate, salesId: string): Promise<string> {
+  async adminUpdate(id: number, data: OrderAdminUpdate, salesId: string): Promise<string> {
     await this.orderRepository.findUniqueOrThrow(id);
     const product = await this.productService.findUnique(data.productId);
     console.log('등록된 상품 판매자', product.adminId);
