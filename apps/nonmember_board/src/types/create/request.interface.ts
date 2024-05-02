@@ -4,4 +4,5 @@ export interface INonMemberBoardCreate {
   email: string;
   content: string;
   orderId: number;
+  authKey: string;
 }
