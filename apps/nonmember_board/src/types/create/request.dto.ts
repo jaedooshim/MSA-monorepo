@@ -20,4 +20,8 @@ export class NonMemberBoardCreateDto {
   @IsNotEmpty()
   @IsNumber()
   orderId: number;
+
+  @IsNotEmpty()
+  @IsString()
+  authKey: string;
 }
