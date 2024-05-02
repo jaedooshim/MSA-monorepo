@@ -14,25 +14,25 @@ export class NonmemberBoardService {
     private orderService: OrderService,
   ) {}
 
-  async create(data: INonMemberBoardCreate, authKey: string): Promise<string> {
+  async create(data: INonMemberBoardCreate): Promise<string> {
     const order = await this.orderService.findUnique(data.orderId);
-    if (order.authKey !== authKey) throw new UnauthorizedException('게시글에 대한 권한이 없습니다.');
+    if (order.authKey !== data.authKey) throw new UnauthorizedException('게시글에 대한 권한이 없습니다.');
     await this.nonMemberBoardRepository.create(data);
     return '게시글이 요청되었습니다. \n관리자가 빠른 시일내로 답변해드리겠습니다.';
   }
 
-  async update(id: number, data: INonMemberBoardUpdate, authKey: string): Promise<string> {
+  async update(id: number, data: INonMemberBoardUpdate): Promise<string> {
     await this.nonMemberBoardRepository.findUniqueOrThrow(id);
     const order = await this.orderService.findUnique(data.orderId);
-    if (order.authKey !== authKey) throw new UnauthorizedException('게시글에 대한 권한이 없습니다.');
+    if (order.authKey !== data.authKey) throw new UnauthorizedException('게시글에 대한 권한이 없습니다.');
     await this.nonMemberBoardRepository.update(id, data);
     return '게시글 수정이 완료되었습니다. \n관리자가 빠른 시일내로 답변해드리겠습니다.';
   }
 
-  async softDelete(id: number, data: INonMemberBoardDelete, authKey: string): Promise<string> {
+  async softDelete(id: number, data: INonMemberBoardDelete): Promise<string> {
     await this.nonMemberBoardRepository.findUniqueOrThrow(id);
     const order = await this.orderService.findUnique(data.orderId);
-    if (order.authKey !== authKey) throw new UnauthorizedException('게시글에 대한 권한이 없습니다.');
+    if (order.authKey !== data.authKey) throw new UnauthorizedException('게시글에 대한 권한이 없습니다.');
     await this.nonMemberBoardRepository.softDelete(id);
     return '게시글 삭제가 완료되었습니다. \n문의사항이 생기면 다시 말씀해주세요.';
   }
