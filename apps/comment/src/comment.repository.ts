@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
-import { ICommentCreate } from './types/create/request.interface';
-import { Comment } from '@prisma/client';
+import { Comment, Prisma } from '@prisma/client';
 import { ICommentUpdate } from './types/update/request.interface';
 import { ICommentFindMany } from './types/find-many/request.interface';
 
@@ -12,12 +11,12 @@ export class CommentRepository {
   private commentRepository = this.prisma.extendedClient.comment;
 
   // 회원 댓글생성
-  async create(data: ICommentCreate): Promise<Comment> {
+  async create(data: Prisma.CommentUncheckedCreateInput): Promise<Comment> {
     return await this.commentRepository.create({ data });
   }
 
   // 판매자 댓글생성
-  async salesCreate(data: ICommentCreate): Promise<Comment> {
+  async salesCreate(data: Prisma.CommentUncheckedCreateInput): Promise<Comment> {
     return await this.commentRepository.create({ data });
   }
 
