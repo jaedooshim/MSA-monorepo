@@ -4,7 +4,7 @@
 
 ### 아키텍쳐 구조
 
-![Architecture](architecture.png)
+![Architecture](Architecture.PNG)
 
 ### Shop ERD 설계
 
